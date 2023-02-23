@@ -13,11 +13,11 @@ struct ContentView: View {
         ZStack{
             CameraView{
                 score = $0
-                
-            }.overlay(
-                RepresentedImageView(score: $score)
-                    .foregroundColor(.red)
-              )
+            }
+//            }.overlay(
+//                RepresentedImageView(score: $score)
+//                    .foregroundColor(.red)
+//              )
               .edgesIgnoringSafeArea(.all)
         }
     }

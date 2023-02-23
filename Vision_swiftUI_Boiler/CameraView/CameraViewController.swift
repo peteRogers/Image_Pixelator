@@ -40,6 +40,11 @@ final class CameraViewController: UIViewController {
                 try setupAVSession()
                // cameraView.previewLayer.connection?.videoOrientation = .portrait
                 cameraView.previewLayer.session = cameraFeedSession
+                if (cameraView.previewLayer.connection!.isVideoMirroringSupported) {
+                    print("Is supported mirroring")
+                    cameraView.previewLayer.connection!.automaticallyAdjustsVideoMirroring = false
+                    cameraView.previewLayer.connection!.isVideoMirrored = false
+                }
                 //cameraView.previewLayer.videoGravity = .resizeAspect
                 
             }
@@ -142,7 +147,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
                     score?(distance)
                 }else{
                     print("no: \(Date.now)")
-                    score?(Float.random(in: -1 ... 0))
+                    score?(Float.random(in: -5 ... 1))
                 }
             }
         }catch{
