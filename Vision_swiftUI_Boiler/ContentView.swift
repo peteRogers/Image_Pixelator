@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var score:Float = 0
+    @State private var score:String = ""
     var body: some View {
         ZStack{
             CameraView{
                 score = $0
-            }
-//            }.overlay(
-//                RepresentedImageView(score: $score)
-//                    .foregroundColor(.red)
-//              )
+            
+            }.overlay(
+                RepresentedImageView(score: $score)
+                    .foregroundColor(.red)
+              )
               .edgesIgnoringSafeArea(.all)
         }
     }

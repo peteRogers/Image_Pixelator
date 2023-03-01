@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct CameraView: UIViewControllerRepresentable {
-  var score: ((Float) -> Void)?
+  var score: ((String) -> Void)?
 
   func makeUIViewController(context: Context) -> CameraViewController {
     let cvc = CameraViewController()
