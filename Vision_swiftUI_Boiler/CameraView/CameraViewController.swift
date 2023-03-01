@@ -22,7 +22,7 @@ final class CameraViewController: UIViewController {
 
     
     
-    var score: ((String) -> Void)?
+    var score: (([VNBarcodeObservation]) -> Void)?
     
     private var counter = 0
     
@@ -38,7 +38,6 @@ final class CameraViewController: UIViewController {
         do {
             if cameraFeedSession == nil {
                 try setupAVSession()
-               // cameraView.previewLayer.connection?.videoOrientation = .portrait
                 cameraView.previewLayer.session = cameraFeedSession
 //                if (cameraView.previewLayer.connection!.isVideoMirroringSupported) {
 //                    print("Is supported mirroring")
@@ -119,12 +118,10 @@ final class CameraViewController: UIViewController {
 }
 
 extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
-
-  
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer,from connection: AVCaptureConnection) {
         
                 counter += 1
-        if(counter > 10){
+        if(counter > 2){
             counter = 0
             guard let frame = CMSampleBufferGetImageBuffer(sampleBuffer) else {
                 debugPrint("unable to get image from sample buffer")
@@ -134,130 +131,14 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             barcodeRequest.symbologies = [.qr]
             try? self.sequenceHandler.perform([barcodeRequest], on: frame)
             if let results = barcodeRequest.results {
-                //print("nothing here")
-                for result in results{
-                    print(result.payloadStringValue)
-                    print(result.boundingBox.midX)
-                }
+                score?(results)
             }
             
         }
         
     }
     
-    
-   
-    
-//    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer,from connection: AVCaptureConnection) {
-//        counter += 1
-//        if(counter > 10){
-//            counter = 0
-//            let handler = VNImageRequestHandler(
-//                cmSampleBuffer: sampleBuffer,
-//                orientation: .up,
-//                options: [:]
-//            )
-//
-//
-//            //        if preImage == nil{
-//            //            //print(preImage.debugDescription)
-//            //            preImage = handler
-//            //        }
-//            //
-//            //        var observation : VNFeaturePrintObservation?
-//            //        var sourceObservation : VNFeaturePrintObservation?
-//            //        sourceObservation = featureprintObservationForImage(requestHandler: handler)
-//            //        if let l = preImage{
-//            //            observation = featureprintObservationForImage(requestHandler: l)
-//            //        }
-//            //        do{
-//            //            var distance = Float(0)
-//            //            if let sourceObservation = sourceObservation{
-//            //                try observation?.computeDistance(&distance, to: sourceObservation)
-//            //
-//            //                if( distance > 5){
-//            //                    print("yes: \(Date.now)")
-//            //                    preImage = handler
-//            //                    score?(distance)
-//            //                }else{
-//            //                    print("no: \(Date.now)")
-//            //                    score?(Float.random(in: -5 ... 1))
-//            //                }
-//            //            }
-//            //        }catch{
-//            //            print("error occured")
-//            //        }
-//            //
-//
-//
-//            // self.score?(["aa","bb","CC"])
-//
-//            /////////////////////////
-//
-//            let recognizeTextRequest = VNRecognizeTextRequest { (request, error) in
-//                guard let observations = request.results as? [VNRecognizedTextObservation] else {
-//                    return
-//                }
-//
-//                var recognizedStrings = observations.compactMap { observation in
-//                    observation.topCandidates(1).first?.string
-//                    // print(observation.debugDescription)
-//                }
-//
-//                let boundingRects: [CGRect] = observations.compactMap { observation in
-//
-//                    // Find the top observation.
-//                    guard let candidate = observation.topCandidates(1).first else { return .zero }
-//
-//                    // Find the bounding-box observation for the string range.
-//                    let stringRange = candidate.string.startIndex..<candidate.string.endIndex
-//                    let boxObservation = try? candidate.boundingBox(for: stringRange)
-//
-//                    // Get the normalized CGRect value.
-//                    return boxObservation?.boundingBox ?? .zero
-//
-////                    // Convert the rectangle from normalized coordinates to image coordinates.
-////                    return VNImageRectForNormalizedRect(boundingBox,
-////                                                        Int(image.size.width),
-////                                                        Int(image.size.height))
-//                }
-//
-//                DispatchQueue.main.async {
-//                     print(recognizedStrings)
-//                     print(boundingRects)
-//
-//                    var singleString = ""
-//                    for i in recognizedStrings{
-//                        //print(i)
-//                        let a = String(i.filter { !" ".contains($0) })
-//                        singleString.append(a)
-//                        // print(a)
-//                       // output.append(a)
-//
-//                    }
-//
-//                    self.score?(singleString)
-//
-//                }
-//            }
-//
-//            recognizeTextRequest.recognitionLevel = .accurate
-//
-//            DispatchQueue.global(qos: .userInitiated).async {
-//                do {
-//                    try handler.perform([recognizeTextRequest])
-//                } catch {
-//                    print(error)
-//                }
-//            }
-//
-//        }
-//
-//
-//    }
-    
-    
-   
+ 
     
     func featureprintObservationForImage(requestHandler: VNImageRequestHandler) -> VNFeaturePrintObservation? {
        

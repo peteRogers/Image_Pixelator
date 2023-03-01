@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Vision
 
 struct ContentView: View {
-    @State private var score:String = ""
+    @State private var score:[VNBarcodeObservation] = []
     var body: some View {
         ZStack{
             CameraView{

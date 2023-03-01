@@ -1,9 +1,11 @@
 
 
 import SwiftUI
+import UIKit
+import Vision
 
 struct CameraView: UIViewControllerRepresentable {
-  var score: ((String) -> Void)?
+  var score: (([VNBarcodeObservation]) -> Void)?
 
   func makeUIViewController(context: Context) -> CameraViewController {
     let cvc = CameraViewController()
